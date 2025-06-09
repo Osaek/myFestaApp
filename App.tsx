@@ -5,33 +5,34 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StatusBar,
   StyleSheet,
   useColorScheme,
   View,
   SafeAreaView,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
-import {useCameraPermission} from 'react-native-vision-camera';
-
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import CameraScreen from './components/CameraScreen';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const {hasPermission, requestPermission} = useCameraPermission();
+  const [showCamera, setShowCamera] = useState(false);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  useEffect(() => {
-    (async () => {
-      const permission = await requestPermission();
-      console.log('Camera permission:', permission);
-    })();
-  }, [requestPermission]);
+  const handleStartCamera = () => {
+    setShowCamera(true);
+  };
+
+  const handleBackToMain = () => {
+    setShowCamera(false);
+  };
 
   return (
     <SafeAreaView style={styles.background}>
@@ -39,7 +40,17 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <View style={styles.container}>{hasPermission && <CameraScreen />}</View>
+      <View style={styles.container}>
+        {showCamera ? (
+          <CameraScreen onBack={handleBackToMain} />
+        ) : (
+          <View style={styles.mainContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleStartCamera}>
+              <Text style={styles.buttonText}>카메라 시작하기</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -52,6 +63,30 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     width: '100%',
+  },
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
