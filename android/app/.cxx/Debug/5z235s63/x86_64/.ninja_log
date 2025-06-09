@@ -1,0 +1,5 @@
+# ninja log v5
+0	47	0	/Users/soya/soya/MyFesta/android/app/.cxx/Debug/5z235s63/x86_64/CMakeFiles/cmake.verify_globs	75eaa5b76876d7ac
+0	2317	1749471050964903359	CMakeFiles/appmodules.dir/Users/soya/soya/MyFesta/android/app/build/generated/autolinking/src/main/jni/autolinking.cpp.o	39bb8244c24a3d40
+0	2339	1749471051004072174	CMakeFiles/appmodules.dir/OnLoad.cpp.o	6e7967832bb92ec5
+2339	2475	1749471051143157290	/Users/soya/soya/MyFesta/android/app/build/intermediates/cxx/Debug/5z235s63/obj/x86_64/libappmodules.so	a8bef4874608a4ee

@@ -1,0 +1,47 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly declare text files (to ensure consistent LF endings)
+*.js     text
+*.jsx    text
+*.ts     text
+*.tsx    text
+*.json   text
+*.css    text
+*.scss   text
+*.md     text
+*.html   text
+*.xml    text
+*.yml    text
+*.yaml   text
+
+# Binary files
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ttf    binary
+*.otf    binary
+*.woff   binary
+*.woff2  binary
+*.eot    binary
+*.mp4    binary
+*.mp3    binary
+*.wav    binary
+*.mov    binary
+*.zip    binary
+
+# Avoid showing diffs for lockfiles and binary
+package-lock.json merge=union
+*.lock text
+*.keystore binary
+*.jks binary
+
+# Apple-specific
+*.xcassets/* binary
+*.xcuserstate binary
+
+# Git LFS examples (if using large files, optional)
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
+# *.mov filter=lfs diff=lfs merge=lfs -text
