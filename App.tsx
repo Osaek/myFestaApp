@@ -1,93 +1,70 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useState} from 'react';
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import CameraScreen from './components/CameraScreen';
+  Home,
+  Search,
+  PlusCircle,
+  MessageCircle,
+  User,
+} from 'lucide-react-native';
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const [showCamera, setShowCamera] = useState(false);
+import MainScreen from './screens/MainScreen';
+import DiscoverScreen from './screens/DiscoverScreen';
+import CreateScreen from './screens/CreateScreen';
+import InboxScreen from './screens/InboxScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+const Tab = createBottomTabNavigator();
 
-  const handleStartCamera = () => {
-    setShowCamera(true);
-  };
-
-  const handleBackToMain = () => {
-    setShowCamera(false);
-  };
-
+export default function App() {
   return (
-    <SafeAreaView style={styles.background}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <View style={styles.container}>
-        {showCamera ? (
-          <CameraScreen onBack={handleBackToMain} />
-        ) : (
-          <View style={styles.mainContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleStartCamera}>
-              <Text style={styles.buttonText}>카메라 시작하기</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({route}) => ({
+            tabBarIcon: ({focused, color, size}) => {
+              const iconSize = route.name === 'Create' ? 40 : size;
+              const iconColor = color;
+
+              switch (route.name) {
+                case 'Home':
+                  return <Home size={iconSize} color={iconColor} />;
+                case 'Discover':
+                  return <Search size={iconSize} color={iconColor} />;
+                case 'Create':
+                  return <PlusCircle size={iconSize} color={iconColor} />;
+                case 'Inbox':
+                  return <MessageCircle size={iconSize} color={iconColor} />;
+                case 'Profile':
+                  return <User size={iconSize} color={iconColor} />;
+                default:
+                  return <Home size={iconSize} color={iconColor} />;
+              }
+            },
+            tabBarActiveTintColor: 'white',
+            tabBarInactiveTintColor: 'gray',
+            tabBarStyle: {
+              backgroundColor: 'black',
+              borderTopWidth: 0,
+              elevation: 0,
+              height: 50,
+              paddingBottom: 5,
+            },
+            headerShown: false,
+          })}>
+          <Tab.Screen name="Home" component={MainScreen} />
+          <Tab.Screen name="Discover" component={DiscoverScreen} />
+          <Tab.Screen
+            name="Create"
+            component={CreateScreen}
+            options={{tabBarLabel: ''}}
+          />
+          <Tab.Screen name="Inbox" component={InboxScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-  },
-  background: {
-    flex: 1,
-    width: '100%',
-  },
-  mainContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
-
-export default App;
