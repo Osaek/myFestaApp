@@ -84,6 +84,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        
+        manifestPlaceholders = [
+            KAKAO_APP_KEY: "c830d99c3f41e1136535973d8ff3df99"
+        ]
     }
     signingConfigs {
         debug {

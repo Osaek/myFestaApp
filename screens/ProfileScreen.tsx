@@ -10,23 +10,39 @@ import {
 } from 'react-native';
 import {
   Menu,
-  MoreHorizontal,
   Grid,
   Heart,
   Lock,
   Plus,
   Play,
+  LogOut,
+  User,
 } from 'lucide-react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useUserStore} from '../store/userStore';
+import {logout as kakaoLogout} from '@react-native-seoul/kakao-login';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}: {navigation: any}) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState('videos');
+  const {user, isLoggedIn, userlogout} = useUserStore();
+
+    const handleLogout = async () => {
+    try {
+      // 카카오 로그아웃 시도
+      await kakaoLogout();
+    } catch (error) {
+      console.log('카카오 로그아웃 오류 (무시됨):', error);
+    }
+    
+    // 앱 로그아웃
+    userlogout();
+  };
 
   const userStats = {
-    following: 125,
-    followers: '10.5K',
-    likes: '142.7K',
+    following: user?.following || 0,
+    followers: user?.followers || 0,
+    likes: user?.likes || 0,
   };
 
   const userVideos = [
@@ -44,18 +60,58 @@ export default function ProfileScreen() {
     {id: '9', thumbnail: 'https://picsum.photos/id/245/300/400', views: '8.3M'},
   ];
 
+  // 로그인하지 않은 경우 로그인 페이지로 이동
+  const handleProfilePress = () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Login');
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <View style={[styles.container, {paddingTop: insets.top}]}>
+        <View style={styles.header}>
+          <Menu size={24} color="white" />
+          <Text style={styles.headerTitle}>프로필</Text>
+          <View style={{width: 24}} />
+        </View>
+
+        <View style={styles.notLoggedInContainer}>
+          <View style={styles.notLoggedInContent}>
+            <User size={80} color="#666" />
+            <Text style={styles.notLoggedInTitle}>로그인이 필요합니다</Text>
+            <Text style={styles.notLoggedInSubtitle}>
+              프로필을 보려면 로그인하세요
+            </Text>
+            <TouchableOpacity
+              style={styles.signUpButton}
+              onPress={handleProfilePress}>
+              <Text style={styles.signUpButtonText}>로그인</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.container, {paddingTop: insets.top}]}>
       <View style={styles.header}>
         <Menu size={24} color="white" />
-        <Text style={styles.headerTitle}>@username</Text>
-        <MoreHorizontal size={24} color="white" />
+        <Text style={styles.headerTitle}>@{user?.username}</Text>
+        <TouchableOpacity onPress={handleLogout}>
+          <LogOut size={24} color="white" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.profileSection}>
           <Image
-            source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}}
+            source={
+              user?.profileImage
+                ? {uri: user.profileImage}
+                : {uri: 'https://randomuser.me/api/portraits/men/32.jpg'}
+            }
             style={styles.profilePic}
           />
 
@@ -75,9 +131,9 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.bioContainer}>
-            <Text style={styles.username}>John Smith</Text>
+            <Text style={styles.username}>{user?.username || '사용자'}</Text>
             <Text style={styles.bio}>
-              Creating awesome short videos ✨ | Follow for daily content 🎬
+              {user?.bio || '자기소개를 추가해보세요 ✨'}
             </Text>
           </View>
 
@@ -341,5 +397,40 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 10,
     fontSize: 16,
+  },
+  notLoggedInContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  notLoggedInContent: {
+    alignItems: 'center',
+  },
+  notLoggedInTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '600',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  notLoggedInSubtitle: {
+    color: '#666',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  signUpButton: {
+    backgroundColor: '#ff6b6b',
+    borderRadius: 12,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+  },
+  signUpButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
