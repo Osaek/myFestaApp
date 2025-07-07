@@ -81,27 +81,12 @@ export default function SignUpScreen({navigation}: SignUpScreenProps) {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.profileImageSection}>
-          <TouchableOpacity
-            style={styles.profileImageContainer}
-            onPress={handleProfileImageSelect}>
-            {profileImage ? (
-              <Image source={{uri: profileImage}} style={styles.profileImage} />
-            ) : (
-              <View style={styles.profileImagePlaceholder}>
-                <Camera size={40} color="#666" />
-              </View>
-            )}
-          </TouchableOpacity>
-          <Text style={styles.profileImageText}>프로필 사진 추가</Text>
-        </View>
-
         <View style={styles.formSection}>
           <View style={styles.inputContainer}>
             <User size={20} color="#666" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="사용자명"
+              placeholder="사용자 이름"
               placeholderTextColor="#666"
               value={formData.username}
               onChangeText={text => setFormData({...formData, username: text})}
@@ -146,19 +131,6 @@ export default function SignUpScreen({navigation}: SignUpScreenProps) {
               }
             />
           </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, styles.bioInput]}
-              placeholder="자기소개 (선택사항)"
-              placeholderTextColor="#666"
-              multiline
-              numberOfLines={3}
-              value={formData.bio}
-              onChangeText={text => setFormData({...formData, bio: text})}
-            />
-          </View>
-
           <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
             <Text style={styles.signUpButtonText}>회원가입</Text>
           </TouchableOpacity>
